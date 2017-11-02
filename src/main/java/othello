@@ -11,5 +11,5 @@
 cd "$(dirname "$0")/src"
 
 # Call your Java program ($1 and $2 are the input parameters):
-java Othello $1 $2
+java Othell $1 $2
 # or java -jar Othello.jar $1 $2

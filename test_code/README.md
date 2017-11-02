@@ -1,6 +1,6 @@
-Test your Othello program
+Test your OthelloMain program
 --------------------------
-This folder contains code for testing your Othello program. 
+This folder contains code for testing your OthelloMain program.
 
 On a linux machine, do the following:
 - Make sure that the scripts 'othellostart' and 'othello' are executable. If not, write `chmod +x othellostart othello`.

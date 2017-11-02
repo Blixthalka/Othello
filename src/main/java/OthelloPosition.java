@@ -87,12 +87,13 @@ public class OthelloPosition {
 	 */
 
 	public LinkedList getMoves() {
+		LinkedList<OthelloAction> list = new LinkedList<>();
 
 		/*
 		 * TODO: write the code for this method and whatever helper methods it
 		 * needs
 		 */
-
+		return list;
 	}
 
 	/* toMove */
@@ -109,14 +110,18 @@ public class OthelloPosition {
 	 * in the current position. Observe that this also changes the player to
 	 * move next.
 	 */
-	public OthelloPosition makeMove(OthelloAction action)
-			throws IllegalMoveException {
-
+	public OthelloPosition makeMove(OthelloAction action) throws IllegalMoveException {
 		/*
 		 * TODO: write the code for this method and whatever helper functions it
 		 * needs.
 		 */
+		OthelloPosition pos = this.clone();
 
+		if (!action.isPassMove())
+			pos.board[action.getRow()][action.getColumn()] = pos.playerToMove ? 'W' : 'B';
+
+		pos.playerToMove = !pos.playerToMove;
+		return pos;
 	}
 
 	/**

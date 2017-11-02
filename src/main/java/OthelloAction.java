@@ -1,4 +1,5 @@
 
+
 /**
  * This class represents a 'move' in a game. The move is simply represented by
  * two integers: the row and the column where the player puts the marker. In

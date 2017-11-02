@@ -1,8 +1,8 @@
-Instructions for the Othello assignment
+Instructions for the OthelloMain assignment
 ------------------------------------------
-In this assignment, you will write an Othello engine, i.e., a program that computes moves for the game Othello (a.k.a. Reversi). 
+In this assignment, you will write an OthelloMain engine, i.e., a program that computes moves for the game OthelloMain (a.k.a. Reversi).
 
-Basically, you should write a program that takes an Othello positions and returns a recommended move for the player who has the move.
+Basically, you should write a program that takes an OthelloMain positions and returns a recommended move for the player who has the move.
 
 You will also have to implement a representation for the positions. The Java class OthelloPosition is incomplete. You will have to fill in code at the places maked 'TODO' in the file.
 
