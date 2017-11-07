@@ -7,4 +7,4 @@
 cd "$(dirname "$0")"
 
 # run the example program (disregards the time parameter)
-java OthelloMain $1
+java Othello $1

@@ -21,21 +21,21 @@ public class OthelloTest {
 
     @Test
     public void getMovesEmptyBoard() {
-        assertEquals("No possible move on empty board.", pos.getMoves().size(), 0);
+        assertEquals(pos.getMoves().size(), 0);
     }
 
 
-//    @Test()
-//    public void initMoveWhite() {
-//        OthelloPosition pos = new OthelloPosition();
-//        pos.initialize();
-//        pos.makeMove(new OthelloAction(2, 2));
-//    }
-//
-//    @Test(expected = IllegalMoveException.class)
-//    public void notAdjacentMove() throws IllegalMoveException {
-//        OthelloPosition pos = new OthelloPosition();
-//        pos.initialize();
-//        pos.makeMove(new OthelloAction(2, 2));
-//    }
+    @Test()
+    public void initMoveWhite() throws IllegalMoveException {
+        OthelloPosition pos = new OthelloPosition();
+        pos.initialize();
+        pos.makeMove(new OthelloAction(5, 3));
+    }
+
+    @Test(expected = IllegalMoveException.class)
+    public void notAdjacentMove() throws IllegalMoveException {
+        OthelloPosition pos = new OthelloPosition();
+        pos.initialize();
+        pos.makeMove(new OthelloAction(2, 2));
+    }
 }

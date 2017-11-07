@@ -8,8 +8,8 @@
 
 # Change directory to the location of your java program (src folder in this case)
 # $(dirname "$0") is the path to where this script is located
-cd "$(dirname "$0")/src"
+cd "$(dirname "$0")/target"
 
 # Call your Java program ($1 and $2 are the input parameters):
-java Othell $1 $2
-# or java -jar Othello.jar $1 $2
+
+java -jar Othello-1.0.jar $1 $2
