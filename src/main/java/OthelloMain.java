@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.util.LinkedList;
 import java.util.concurrent.*;
 
@@ -8,7 +7,7 @@ public class OthelloMain {
     public static void main(String[] args) {
 
         if (args.length != 2) {
-            System.out.println("Wrong arguments");
+            System.out.println("Wrong arguments.");
             return;
         }
 
@@ -16,28 +15,42 @@ public class OthelloMain {
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        OthelloAction action = new OthelloAction("pass");
+        LinkedList<OthelloActionWrapper> actions = new LinkedList<>();
         OthelloPosition position = new OthelloPosition(args[0]);
-        int depth;
-        AlphaBetaAlgorithm alg = new AlphaBetaAlgorithm(1, new Evaluator());
+        AlphaBetaAlgorithm alg = new AlphaBetaAlgorithm(10, new Evaluator());
 
         try {
-            for (depth = 2; depth < Integer.MAX_VALUE; depth++) {
+            for (int depth = 2; depth <= 60 ; depth++) {
                 long start = System.currentTimeMillis();
                 alg = new AlphaBetaAlgorithm(depth, new Evaluator());
-                action = executor.submit(new Task(alg, position)).get(timeConstraint, TimeUnit.MILLISECONDS);
+                actions.addFirst(executor.submit(new Task(alg, position)).get(timeConstraint, TimeUnit.MILLISECONDS));
                 timeConstraint -= (System.currentTimeMillis() - start);
             }
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException ignored) {
+            // Just want to exit the search.
+        } finally {
             executor.shutdownNow();
             alg.exit();
         }
 
-        action.print();
+        if (actions.size() == 0) {
+            new OthelloAction("pass").print();
+            return;
+        }
+
+        for(int i = 0; i < actions.size(); i++) {
+            OthelloActionWrapper wrapper = actions.get(i);
+
+            if(!wrapper.interupted) {
+                wrapper.action.print();
+                break;
+            }
+        }
+
     }
 }
 
-class Task implements Callable<OthelloAction> {
+class Task implements Callable<OthelloActionWrapper> {
     private AlphaBetaAlgorithm alg;
     private OthelloPosition position;
 
@@ -47,7 +60,18 @@ class Task implements Callable<OthelloAction> {
     }
 
     @Override
-    public OthelloAction call() throws Exception {
-        return alg.evaluate(position);
+    public OthelloActionWrapper call() throws Exception {
+        OthelloActionWrapper wrapper = new OthelloActionWrapper();
+        try {
+            wrapper.action = alg.evaluate(position);
+        } catch (ExitException e) {
+            wrapper.interupted = true;
+        }
+        return wrapper;
     }
+}
+
+class OthelloActionWrapper {
+    public OthelloAction action;
+    public boolean interupted = false;
 }

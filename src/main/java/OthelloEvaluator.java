@@ -14,6 +14,6 @@
 public interface OthelloEvaluator {
 
 	/** Reterns an integer, representing a heuristic evaluation of the postion. */
-	public int evaluate(OthelloPosition position);
+	public int evaluate(OthelloPosition position) throws ExitException;
 
 }

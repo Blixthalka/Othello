@@ -30,12 +30,12 @@ while [ "$endgame" != "yes" ]
 do
     echo ""
     echo ""
-    #echo "White to move"
-    #echo $pos
+#    echo "White to move"
+ #   echo $pos
     STARTTIME=$(date +%s)
     move=`$white $pos $time`
     ENDTIME=$(date +%s)
-    echo $move
+  #  echo $move
     pos=`java Mover "$pos" "$move"`
     if [ "$move" == "pass" ]
     then
@@ -60,12 +60,12 @@ do
     then
         echo ""
         echo ""
-        #echo "Black to move"
-        #echo $pos
+     #   echo "Black to move"
+    #    echo $pos
 		STARTTIME=$(date +%s)
         move=`$black $pos $time`
         ENDTIME=$(date +%s)
-        echo $move
+   #     echo $move
         pos=`java Mover "$pos" "$move"`
         if [ "$move" == "pass" ]
         then
