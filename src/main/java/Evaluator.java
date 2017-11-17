@@ -27,21 +27,32 @@ public class Evaluator implements OthelloEvaluator {
 
     @Override
     public int evaluate(OthelloPosition position) {
-        int potMoves = potentialMobility(position);
+        //int potMoves = potentialMobility(position);
         int moves = position.getMoves().size();
         int movesLeft = position.movesLeft();
+        int stableBricks =  stableBricks(position);
+        int staticEval = staticEval(position);
         int movesLeftMultiplier = 0;
+
 
         if(movesLeft < 18)
             movesLeftMultiplier = 1;
         else if (movesLeft < 10)
             movesLeftMultiplier = 5;
 
+        //if(stableBricks > 0)
+           // System.err.println(stableBricks);
 
-        int bricks = position.movesLeft() < 14 ? countBricks(position) : 0;
+        Wrapp wrapp = countBricks(position);
 
+        int ret;
+        if(wrapp.opponent == 0)
+            ret = Integer.MAX_VALUE - 2;
+        else if(moves == 0)
+            ret = -10000;
+        else
+            ret = staticEval + moves + wrapp.player * movesLeftMultiplier + stableBricks * 5;
 
-        int ret = staticEval(position) + potMoves + moves + bricks * movesLeftMultiplier;
 
         return position.playerToMove ? ret : -ret;
     }
@@ -59,18 +70,24 @@ public class Evaluator implements OthelloEvaluator {
         return sum;
     }
 
+    class Wrapp {
+        public int opponent = 0;
+        public int player = 0;
+    }
 
-
-    private int countBricks(OthelloPosition position) {
+    private Wrapp countBricks(OthelloPosition position) {
         char player = position.playerToMove ? 'W' : 'B';
-        int sum = 0;
+        char opponent = position.playerToMove ? 'B' : 'W';
+        Wrapp wrapp = new Wrapp();
         for (int i = 1; i < 8 + 1; i++) {
             for (int j = 1; j < 8 + 1; j++) {
                 if (position.board[i][j] == player)
-                    sum++;
+                    wrapp.player++;
+                else if (position.board[i][j] == opponent)
+                    wrapp.opponent++;
             }
         }
-        return sum;
+        return wrapp;
     }
 
 
@@ -105,15 +122,50 @@ public class Evaluator implements OthelloEvaluator {
         char player = position.playerToMove ? 'W' : 'B';
 
         int sum = 0;
-        for (int i = 1; i < 8 + 1; i++) {
+        for (int i = 1; i < 8 + 1; i += 7) {
             for (int j = 1; j < 8 + 1; j++) {
+                // System.err.println(i + " " + j + " " + 0 + " " + 1);
                 if (position.board[i][j] == player) {
-                    
+                    if (isStableEdgePath(position, i, j, new Direction(0,1)) ||
+                            isStableEdgePath(position, i, j, new Direction(0,-1))) {
+                        sum++;
+
+                    }
                 }
             }
         }
-        return sum;
 
+      //  System.err.println();
+        for (int i = 1; i < 8 + 1; i++) {
+            for (int j = 1; j < 8 + 1; j += 7) {
+                if (position.board[i][j] == player) {
+                    if (isStableEdgePath(position, i, j, new Direction(1,0)) ||
+                            isStableEdgePath(position, i, j, new Direction(-1,0))) {
+                        sum++;
+                    }
+                }
+            }
+        }
+        //System.err.println();
+        return sum;
+    }
+
+    private boolean isStableEdgePath(OthelloPosition position, int row, int column, Direction direction) {
+        char player = position.playerToMove ? 'W' : 'B';
+
+        do {
+            row    += direction.getRowDirection();
+            column += direction.getColumnDirection();
+        } while (position.board[row][column] == player);
+
+        return isCorner(row, column);
+    }
+
+    private boolean isCorner(int row, int column) {
+        return row == 8 && column == 1 ||
+                row == 8 && column == 8 ||
+                row == 1 && column == 8 ||
+                row == 1 && column == 1;
     }
 
 }

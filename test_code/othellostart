@@ -31,7 +31,7 @@ do
     echo ""
     echo ""
 #    echo "White to move"
- #   echo $pos
+    echo $pos
     STARTTIME=$(date +%s)
     move=`$white $pos $time`
     ENDTIME=$(date +%s)
@@ -61,7 +61,7 @@ do
         echo ""
         echo ""
      #   echo "Black to move"
-    #    echo $pos
+        echo $pos
 		STARTTIME=$(date +%s)
         move=`$black $pos $time`
         ENDTIME=$(date +%s)

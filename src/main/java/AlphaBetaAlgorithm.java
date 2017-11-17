@@ -31,11 +31,11 @@ public class AlphaBetaAlgorithm implements OthelloAlgorithm {
 
 
         try {
-           // System.err.println(depth);
+           //System.err.println(depth);
             for (OthelloAction action : position.getMoves()) {
 
                 int v = alphaBeta(position.makeMove(action), this.depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
-               // System.err.println("Score: " + v + " (" + action.row + "," + action.column + ")" +  " best: " + bestScore + " (" + bestAction.row + "," + bestAction.column + ")");
+                //System.err.println("Score: " + v + " (" + action.row + "," + action.column + ")" +  " best: " + bestScore + " (" + bestAction.row + "," + bestAction.column + ")");
                 if (position.playerToMove) {
                     if (v > bestScore) {
                         bestAction = action;
