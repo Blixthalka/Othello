@@ -27,23 +27,22 @@ public class Evaluator implements OthelloEvaluator {
 
     @Override
     public int evaluate(OthelloPosition position) {
-        //int potMoves = potentialMobility(position);
         int moves = position.getMoves().size();
         int movesLeft = position.movesLeft();
         int stableBricks =  stableBricks(position);
         int staticEval = staticEval(position);
-        int movesLeftMultiplier = 0;
-
-
-        if(movesLeft < 18)
-            movesLeftMultiplier = 1;
-        else if (movesLeft < 10)
-            movesLeftMultiplier = 5;
-
-        //if(stableBricks > 0)
-           // System.err.println(stableBricks);
-
         Wrapp wrapp = countBricks(position);
+        int movesLeftMultiplier = 0;
+        int staticEvalMultiplier = 1;
+
+        if(movesLeft < 10) {
+            movesLeftMultiplier = 2;
+            staticEvalMultiplier = 0;
+        }
+//        else if (movesLeft < 18) {
+//            movesLeftMultiplier = 1;
+//        }
+
 
         int ret;
         if(wrapp.opponent == 0)
@@ -51,10 +50,12 @@ public class Evaluator implements OthelloEvaluator {
         else if(moves == 0)
             ret = -10000;
         else
-            ret = staticEval + moves + wrapp.player * movesLeftMultiplier + stableBricks * 5;
+            ret = staticEval * staticEvalMultiplier + moves * 2 + wrapp.player * movesLeftMultiplier + stableBricks * 10;
 
 
+        //ret = wrapp.player - wrapp.opponent;
         return position.playerToMove ? ret : -ret;
+
     }
 
     private int staticEval(OthelloPosition position) {
