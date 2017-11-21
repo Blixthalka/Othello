@@ -20,7 +20,7 @@ public class OthelloMain {
         AlphaBetaAlgorithm alg = new AlphaBetaAlgorithm(10, new Evaluator());
 
         try {
-            for (int depth = 2; depth <= 60 ; depth++) {
+            for (int depth = 4; depth <= 60 ; depth++) {
                 long start = System.currentTimeMillis();
                 alg = new AlphaBetaAlgorithm(depth, new Evaluator());
                 actions.addFirst(executor.submit(new Task(alg, position)).get(timeConstraint, TimeUnit.MILLISECONDS));

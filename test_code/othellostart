@@ -12,7 +12,7 @@ if [ $# -lt 3 ]; then
 fi
 
 pos="WEEEEEEEEEEEEEEEEEEEEEEEEEEEOXEEEEEEXOEEEEEEEEEEEEEEEEEEEEEEEEEEE"
-#java Printer $pos
+java Printer $pos
 
 white="$1"
 black="$2"
@@ -30,12 +30,12 @@ while [ "$endgame" != "yes" ]
 do
     #echo ""
     #echo ""
-#    echo "White to move"
-   # echo $pos
+    echo "White to move"
+    echo $pos
     STARTTIME=$(date +%s)
     move=`$white $pos $time`
     ENDTIME=$(date +%s)
-  #  echo $move
+    echo $move
     pos=`java Mover "$pos" "$move"`
     if [ "$move" == "pass" ]
     then
@@ -47,7 +47,7 @@ do
     else
         whitepass="no"
     fi
- #   java Printer $pos
+    java Printer $pos
     whiteT=$(($ENDTIME - $STARTTIME))
  #   echo "It took $whiteT seconds to make this move..."
     whiteTtot=$(($whiteTtot + $whiteT))
@@ -60,12 +60,12 @@ do
     then
         #echo ""
        # echo ""
-     #   echo "Black to move"
-   #     echo $pos
+        echo "Black to move"
+        echo $pos
 		STARTTIME=$(date +%s)
         move=`$black $pos $time`
         ENDTIME=$(date +%s)
-   #     echo $move
+        echo $move
         pos=`java Mover "$pos" "$move"`
         if [ "$move" == "pass" ]
         then
@@ -77,7 +77,7 @@ do
         else
             blackpass="no"
         fi
-  #      java Printer $pos
+        java Printer $pos
         blackT=$(($ENDTIME - $STARTTIME))
   #      echo "It took $blackT seconds to make this move..."
         blackTtot=$(($blackTtot + $blackT))

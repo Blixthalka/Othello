@@ -1,13 +1,13 @@
 public class Evaluator implements OthelloEvaluator {
 
     // corner score
-    private final static int C = 100;
+    private final static int C = 80;
 
     // adjacent corner score
-    private final static int AC = -5;
+    private final static int AC = 5;
 
     // diagonal  corner score
-    private final static int DC = -10;
+    private final static int DC = -5;
 
     // edge
     private final static int E = 20;
@@ -27,35 +27,57 @@ public class Evaluator implements OthelloEvaluator {
 
     @Override
     public int evaluate(OthelloPosition position) {
+        int whitePlayerScore;
+        int blackPlayerScore;
+
+
+        if (position.playerToMove) {
+            whitePlayerScore = localEval(position);
+            position.playerToMove = !position.playerToMove;
+            blackPlayerScore = localEval(position);
+        } else {
+            blackPlayerScore = localEval(position);
+            position.playerToMove = !position.playerToMove;
+            whitePlayerScore = localEval(position);
+        }
+
+        position.playerToMove = !position.playerToMove;
+        return whitePlayerScore - blackPlayerScore;
+    }
+
+    public int localEval(OthelloPosition position) {
         int moves = position.getMoves().size();
         int movesLeft = position.movesLeft();
         int stableBricks =  stableBricks(position);
         int staticEval = staticEval(position);
         Wrapp wrapp = countBricks(position);
-        int movesLeftMultiplier = 0;
-        int staticEvalMultiplier = 1;
 
-        if(movesLeft < 10) {
-            movesLeftMultiplier = 2;
+        int stableBricsMultiplier = 15;
+        int movesLeftMultiplier = 1;
+        int staticEvalMultiplier = 2;
+        int zeroMoves = 0;
+
+        if(movesLeft <= 14) {
+            movesLeftMultiplier = 10;
             staticEvalMultiplier = 0;
+            stableBricsMultiplier = 5;
         }
-//        else if (movesLeft < 18) {
-//            movesLeftMultiplier = 1;
-//        }
 
 
-        int ret;
+        if(moves == 0) {
+            zeroMoves = 0;
+            // System.err.println("zero moves");
+        }
+
+
         if(wrapp.opponent == 0)
-            ret = Integer.MAX_VALUE - 2;
-        else if(moves == 0)
-            ret = -10000;
+            return Integer.MAX_VALUE - 2;
         else
-            ret = staticEval * staticEvalMultiplier + moves * 2 + wrapp.player * movesLeftMultiplier + stableBricks * 10;
-
-
-        //ret = wrapp.player - wrapp.opponent;
-        return position.playerToMove ? ret : -ret;
-
+           return staticEval * staticEvalMultiplier
+                   + moves * 2 +
+                   wrapp.player * movesLeftMultiplier
+                   - zeroMoves +
+                   stableBricks * stableBricsMultiplier;
     }
 
     private int staticEval(OthelloPosition position) {
