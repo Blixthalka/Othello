@@ -1,7 +1,7 @@
 public class Evaluator implements OthelloEvaluator {
 
     // corner score
-    private final static int C = 80;
+    private final static int C = 85;
 
     // adjacent corner score
     private final static int AC = 5;
@@ -32,54 +32,57 @@ public class Evaluator implements OthelloEvaluator {
 
 
         if (position.playerToMove) {
-            whitePlayerScore = localEval(position);
+            whitePlayerScore = localEvaluate(position);
             position.playerToMove = !position.playerToMove;
-            blackPlayerScore = localEval(position);
+            blackPlayerScore = localEvaluate(position);
         } else {
-            blackPlayerScore = localEval(position);
+            blackPlayerScore = localEvaluate(position);
             position.playerToMove = !position.playerToMove;
-            whitePlayerScore = localEval(position);
+            whitePlayerScore = localEvaluate(position);
         }
 
         position.playerToMove = !position.playerToMove;
         return whitePlayerScore - blackPlayerScore;
     }
 
-    public int localEval(OthelloPosition position) {
+    /**
+     * Evaluates the board state.
+     * @param position The game state.
+     * @return The score of the evaluation.
+     */
+    public int localEvaluate(OthelloPosition position) {
         int moves = position.getMoves().size();
         int movesLeft = position.movesLeft();
         int stableBricks =  stableBricks(position);
         int staticEval = staticEval(position);
-        Wrapp wrapp = countBricks(position);
+        PlayerWrapper wrapp = countBricks(position);
 
         int stableBricsMultiplier = 15;
-        int movesLeftMultiplier = 1;
+        int bricksMultiplier = 1;
         int staticEvalMultiplier = 2;
-        int zeroMoves = 0;
+        int movesMultiplier = 5;
 
         if(movesLeft <= 14) {
-            movesLeftMultiplier = 10;
+            bricksMultiplier = 10;
             staticEvalMultiplier = 0;
             stableBricsMultiplier = 5;
+            movesMultiplier = 1;
+        } else if (movesLeft < 30) {
+            bricksMultiplier = 2;
         }
-
-
-        if(moves == 0) {
-            zeroMoves = 0;
-            // System.err.println("zero moves");
-        }
-
 
         if(wrapp.opponent == 0)
             return Integer.MAX_VALUE - 2;
         else
-           return staticEval * staticEvalMultiplier
-                   + moves * 2 +
-                   wrapp.player * movesLeftMultiplier
-                   - zeroMoves +
+           return staticEval * staticEvalMultiplier +
+                   moves * movesMultiplier +
+                   wrapp.player * bricksMultiplier +
                    stableBricks * stableBricsMultiplier;
     }
 
+    /**
+     * Evaluates the board, based on the static evaluation matrix.
+     */
     private int staticEval(OthelloPosition position) {
         char player = position.playerToMove ? 'W' : 'B';
         int sum = 0;
@@ -93,15 +96,12 @@ public class Evaluator implements OthelloEvaluator {
         return sum;
     }
 
-    class Wrapp {
-        public int opponent = 0;
-        public int player = 0;
-    }
 
-    private Wrapp countBricks(OthelloPosition position) {
+
+    private PlayerWrapper countBricks(OthelloPosition position) {
         char player = position.playerToMove ? 'W' : 'B';
         char opponent = position.playerToMove ? 'B' : 'W';
-        Wrapp wrapp = new Wrapp();
+        PlayerWrapper wrapp = new PlayerWrapper();
         for (int i = 1; i < 8 + 1; i++) {
             for (int j = 1; j < 8 + 1; j++) {
                 if (position.board[i][j] == player)
@@ -114,40 +114,17 @@ public class Evaluator implements OthelloEvaluator {
     }
 
 
-    private int potentialMobility(OthelloPosition position) {
-        char opponentPlayer = position.playerToMove ? 'B' : 'W';
-        int sum = 0;
-
-        for (int r = 1; r < OthelloPosition.BOARD_SIZE + 1; r++) {
-            for (int c = 1; c < OthelloPosition.BOARD_SIZE + 1; c++) {
-                if (position.board[r][c] == opponentPlayer) {
-
-
-                    for (int i = r - 1; i <= r + 1; i++) {
-                        for (int j = c - 1; j <= c + 1; j++) {
-
-                            if (i < 1 || i > OthelloPosition.BOARD_SIZE ||
-                                    j < 1 || j > OthelloPosition.BOARD_SIZE)
-                                continue;
-
-                            if (position.board[i][j] == 'E') {
-                                sum++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return sum;
-    }
-
+    /**
+     * Checks how many stable brick on the edge the current player has.
+     * @param position The game state.
+     * @return The number of stable edge bricks.
+     */
     private int stableBricks(OthelloPosition position) {
         char player = position.playerToMove ? 'W' : 'B';
 
         int sum = 0;
         for (int i = 1; i < 8 + 1; i += 7) {
             for (int j = 1; j < 8 + 1; j++) {
-                // System.err.println(i + " " + j + " " + 0 + " " + 1);
                 if (position.board[i][j] == player) {
                     if (isStableEdgePath(position, i, j, new Direction(0,1)) ||
                             isStableEdgePath(position, i, j, new Direction(0,-1))) {
@@ -158,7 +135,6 @@ public class Evaluator implements OthelloEvaluator {
             }
         }
 
-      //  System.err.println();
         for (int i = 1; i < 8 + 1; i++) {
             for (int j = 1; j < 8 + 1; j += 7) {
                 if (position.board[i][j] == player) {
@@ -169,7 +145,6 @@ public class Evaluator implements OthelloEvaluator {
                 }
             }
         }
-        //System.err.println();
         return sum;
     }
 
@@ -189,6 +164,11 @@ public class Evaluator implements OthelloEvaluator {
                 row == 8 && column == 8 ||
                 row == 1 && column == 8 ||
                 row == 1 && column == 1;
+    }
+
+    class PlayerWrapper {
+        public int opponent = 0;
+        public int player = 0;
     }
 
 }

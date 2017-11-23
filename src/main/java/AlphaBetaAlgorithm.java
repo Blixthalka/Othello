@@ -29,13 +29,9 @@ public class AlphaBetaAlgorithm implements OthelloAlgorithm {
         OthelloAction bestAction = new OthelloAction("pass");
         int bestScore = position.playerToMove ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
-
         try {
-           //System.err.println(depth);
             for (OthelloAction action : position.getMoves()) {
-
                 int v = alphaBeta(position.makeMove(action), this.depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
-                //System.err.println("Score: " + v + " (" + action.row + "," + action.column + ")" +  " best: " + bestScore + " (" + bestAction.row + "," + bestAction.column + ")");
                 if (position.playerToMove) {
                     if (v > bestScore) {
                         bestAction = action;
@@ -43,14 +39,11 @@ public class AlphaBetaAlgorithm implements OthelloAlgorithm {
                     }
                 } else {
                     if (v < bestScore) {
-                    //    System.err.println("New best score.");
                         bestAction = action;
                         bestScore = v;
                     }
                 }
-
             }
-
         } catch (IllegalMoveException e) {
             e.printStackTrace();
             return bestAction;
@@ -60,11 +53,9 @@ public class AlphaBetaAlgorithm implements OthelloAlgorithm {
     }
 
     private int alphaBeta(OthelloPosition pos, int depth, int a, int b) throws IllegalMoveException, ExitException {
-        // System.out.println("depth = [" + depth + "], a = [" + a + "], b = [" + b + "]");
         if (exit) throw new ExitException();
 
         if (depth == 0) {
-            //System.err.println(evaluator.evaluate(pos));
             return evaluator.evaluate(pos);
         }
 

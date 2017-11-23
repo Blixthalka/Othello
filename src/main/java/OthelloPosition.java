@@ -129,6 +129,13 @@ public class OthelloPosition {
     }
 
 
+    /**
+     * Checks if it legal to flip the path.
+     * @param row
+     * @param column
+     * @param direction
+     * @return
+     */
     private boolean isLegalPath(int row, int column, Direction direction) {
         char player1 = playerToMove ? 'W' : 'B';
         char player2 = playerToMove ? 'B' : 'W';
@@ -147,6 +154,12 @@ public class OthelloPosition {
         return board[row][column] == player1;
     }
 
+    /**
+     * Flips a path of discs.
+     * @param row Starting row.
+     * @param column Starting column.
+     * @param direction The direction which it should be flipped.
+     */
     private void flipPath(int row, int column, Direction direction) {
         char player1 = playerToMove ? 'W' : 'B';
         char player2 = playerToMove ? 'B' : 'W';
