@@ -74,8 +74,8 @@ public class Evaluator implements OthelloEvaluator {
         if(wrapp.opponent == 0)
             return Integer.MAX_VALUE - 2;
         else
-           return staticEval * staticEvalMultiplier +
-                   moves * movesMultiplier +
+           return staticEval    * staticEvalMultiplier +
+                   moves        * movesMultiplier +
                    wrapp.player * bricksMultiplier +
                    stableBricks * stableBricsMultiplier;
     }
